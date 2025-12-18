@@ -1,0 +1,39 @@
+[build]
+build-std = false
+pre-build = [
+  "export DEBIAN_FRONTEND=noninteractive",
+  """
+    sed -i 's@//.*archive.ubuntu.com@//mirrors.acme.red@g' /etc/apt/sources.list \
+    && sed -i 's/security.ubuntu.com/mirrors.acme.red/g' /etc/apt/sources.list \
+    && sed -i 's/http:/https:/g' /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y cmake nasm clang gcc-10 libclang-dev \
+    && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 60 \
+    && apt-get clean autoclean \
+    && apt-get autoremove --yes
+  """,
+]
+
+[build.env]
+passthrough = [
+  "CROSS_DOCKER_IN_DOCKER",
+  "AWS_LC_SYS_CFLAGS",
+  "CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_LINKER",
+]
+
+[target.mips-unknown-linux-musl]
+build-std = ["std", "panic_abort"]
+env = { CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_LINKER = ".cargo/mips-linker.sh" }
+image = "ghcr.io/cross-rs/mips-unknown-linux-musl:edge"
+
+[target.mipsel-unknown-linux-musl]
+build-std = true
+image = "ghcr.io/cross-rs/mipsel-unknown-linux-musl:edge"
+
+[target.mips64-unknown-linux-muslabi64]
+build-std = true
+image = "ghcr.io/cross-rs/mips64-unknown-linux-muslabi64:edge"
+
+[target.mips64el-unknown-linux-muslabi64]
+build-std = true
+image = "ghcr.io/cross-rs/mips64el-unknown-linux-muslabi64:edge"
