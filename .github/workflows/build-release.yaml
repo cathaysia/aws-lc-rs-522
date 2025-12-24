@@ -1,0 +1,43 @@
+name: build-release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - release
+        target:
+          # [target, enable_bindgen, enable_zig_cc, enable_jemalloc]
+          - ["mips-unknown-linux-musl", true, false, false]
+    name: Build ${{ matrix.profile }} ${{ matrix.target[0] }}
+    runs-on: ubuntu-latest
+    env:
+      CROSS_NO_WARNINGS: 0
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Prepare environment
+        run: |
+          sudo apt update
+          sudo apt install -y cmake ninja-build nasm wireshark-dev libclang-dev clang llvm
+
+      - name: Install Rust Nightly
+        uses: dtolnay/rust-toolchain@nightly
+
+      - name: Install cross
+        run: cargo install cross --git https://github.com/cross-rs/cross
+
+      - name: Set bindgen feature for aws-lc-rs
+        run: cargo add aws-lc-rs -F bindgen -p aws-lc-rs-522
+
+      - name: Build main
+        env:
+          AWS_LC_SYS_NO_PREFIX: "1"
+        run: |
+          cross +nightly build --bin aws-lc-rs-522 --profile ${{ matrix.profile }} --target ${{ matrix.target[0] }}

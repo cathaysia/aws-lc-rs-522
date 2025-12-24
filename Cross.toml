@@ -16,10 +16,11 @@ passthrough = [
   "CROSS_DOCKER_IN_DOCKER",
   "AWS_LC_SYS_CFLAGS",
   "CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_LINKER",
+  "AWS_LC_SYS_NO_PREFIX=1"
 ]
 
 [target.mips-unknown-linux-musl]
-build-std = ["std", "panic_abort"]
+build-std = ["std", "panic_abort", "unwind"]
 env = { CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_LINKER = ".cargo/mips-linker.sh" }
 image = "ghcr.io/cross-rs/mips-unknown-linux-musl:edge"
 
