@@ -20,18 +20,18 @@ passthrough = [
 ]
 
 [target.mips-unknown-linux-musl]
-build-std = ["std", "panic_abort", "unwind"]
+build-std = ["std", "panic_abort"]
 env = { CARGO_TARGET_MIPS_UNKNOWN_LINUX_MUSL_LINKER = ".cargo/mips-linker.sh" }
 image = "ghcr.io/cross-rs/mips-unknown-linux-musl:edge"
 
 [target.mipsel-unknown-linux-musl]
-build-std = true
+build-std = ["std", "panic_abort"]
 image = "ghcr.io/cross-rs/mipsel-unknown-linux-musl:edge"
 
 [target.mips64-unknown-linux-muslabi64]
-build-std = true
+build-std = ["std", "panic_abort"]
 image = "ghcr.io/cross-rs/mips64-unknown-linux-muslabi64:edge"
 
 [target.mips64el-unknown-linux-muslabi64]
-build-std = true
+build-std = ["std", "panic_abort"]
 image = "ghcr.io/cross-rs/mips64el-unknown-linux-muslabi64:edge"

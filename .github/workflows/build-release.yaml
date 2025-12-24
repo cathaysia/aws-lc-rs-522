@@ -11,8 +11,11 @@ jobs:
         profile:
           - release
         target:
-          # [target, enable_bindgen, enable_zig_cc, enable_jemalloc]
-          - ["mips-unknown-linux-musl", true, false, false]
+          # [target, enable_bindgen, enable_zig_cc]
+          - ["mips-unknown-linux-musl", true, false]
+          - ["mipsel-unknown-linux-musl", true, false]
+          - ["mips64-unknown-linux-muslabi64", true, false]
+          - ["mips64el-unknown-linux-muslabi64", true, false]
     name: Build ${{ matrix.profile }} ${{ matrix.target[0] }}
     runs-on: ubuntu-latest
     env:
@@ -40,4 +43,4 @@ jobs:
         env:
           AWS_LC_SYS_NO_PREFIX: "1"
         run: |
-          cross +nightly build --bin aws-lc-rs-522 --profile ${{ matrix.profile }} --target ${{ matrix.target[0] }}
+          cross +nightly build --bin aws-lc-rs-522 --profile ${{ matrix.profile }} --target ${{ matrix.target[0] }} --verbose
